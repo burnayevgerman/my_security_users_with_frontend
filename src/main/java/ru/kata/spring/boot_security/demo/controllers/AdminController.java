@@ -45,7 +45,7 @@ public class AdminController {
                                 u -> u.getRoles()
                                         .stream()
                                         .map(Role::getViewText)
-                                        .collect(Collectors.toSet())))
+                                        .collect(Collectors.joining(", "))))
         );
 
         model.addAttribute("newUser", new User());
@@ -103,25 +103,5 @@ public class AdminController {
         }
 
         return String.format("redirect:/admin?delete_success&id=%d", id);
-    }
-
-    @ResponseBody
-    @GetMapping("/user-info/{id}")
-    public User getUserById(@PathVariable("id") long id) {
-        User user = userService.getUserById(id);
-        user.setPassword(null);
-        return user;
-    }
-
-    @ResponseBody
-    @GetMapping("/user-role/{id}")
-    public String getRoleById(@PathVariable("id") long id) {
-        if (userService.getUserById(id).getRoles()
-                                        .stream()
-                                        .anyMatch(r -> r.getName().equals("ROLE_ADMIN"))) {
-            return "ROLE_ADMIN";
-        } else {
-            return "ROLE_USER";
-        }
     }
 }

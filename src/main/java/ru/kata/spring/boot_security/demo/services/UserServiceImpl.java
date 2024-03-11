@@ -16,7 +16,6 @@ import java.util.Objects;
 import java.util.Set;
 
 @Service
-@Transactional
 public class UserServiceImpl implements UserService, UserDetailsService {
     private final UserRepository userRepository;
     private final RoleServiceImpl roleService;
@@ -43,25 +42,23 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         return user;
     }
 
-    @Transactional(readOnly = true)
     @Override
     public List<User> getAllUsers() {
         return userRepository.findAll();
     }
 
-    @Transactional(readOnly = true)
     @Override
     public User getUserById(long id) {
         return userRepository.findById(id).orElse(null);
     }
 
     @Override
-    @Transactional(readOnly = true)
     public User getUserByEmail(String email) {
         return userRepository.findUserByEmail(email).orElse(null);
     }
 
     @Override
+    @Transactional
     public User createUser(User user) {
         if ((getUserByEmail(user.getEmail()) != null) || user.getPassword().isEmpty()) {
             return null;
@@ -75,6 +72,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
+    @Transactional
     public User updateUser(User user) {
         if (user.getPassword().isEmpty()) {
             user.setPassword(userRepository.getById(user.getId()).getPassword());
@@ -89,6 +87,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
+    @Transactional
     public boolean deleteUserById(long id) {
         if (userRepository.existsById(id)) {
             userRepository.deleteById(id);
